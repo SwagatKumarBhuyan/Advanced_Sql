@@ -146,3 +146,23 @@ SELECT
 	 MAX(Sales)OVER() - Sales MaxDeviation
 FROM Sales.Orders;
 
+/*Calculate the moving Average of Sales for Each Product Over time*/
+SELECT 
+      OrderID,
+	  ProductID,
+	  OrderDate,
+	  Sales,
+	  Avg(Sales) OVER(PARTITION BY ProductID) AvgSales,
+	  Avg(Sales) OVER(PARTITION BY ProductID ORDER BY OrderDate) AvgSales
+FROM Sales.Orders;
+
+/*Calculate the moving Average of Sales for Each Product Over time Including only Next Product*/
+SELECT 
+      OrderID,
+	  ProductID,
+	  OrderDate,
+	  Sales,
+	  Avg(Sales) OVER(PARTITION BY ProductID) AvgSales,
+	  Avg(Sales) OVER(PARTITION BY ProductID ORDER BY OrderDate 
+	                  ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) AvgSales
+FROM Sales.Orders;
