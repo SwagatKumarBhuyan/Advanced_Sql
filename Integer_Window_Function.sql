@@ -48,3 +48,25 @@ ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY CreationTime DESC) AS RN,
 *
 FROM Sales.OrdersArchive
 ) AS t WHERE RN = 1;
+
+
+/* Segment All Orders Into 3categories : Higher , Medium , Lower */
+SELECT *,
+CASE WHEN Categories = 1 THEN 'High'
+     WHEN Categories = 2 THEN 'Medium'
+	 WHEN Categories = 3 THEN 'Low'
+END AS SalesByCategory
+FROM (
+SELECT 
+    OrderID,
+	Sales,
+    NTILE(3) OVER(ORDER BY Sales DESC) AS Categories
+FROM Sales.Orders
+    ) AS t
+
+
+/* In Order to Export The Data , Divide The Order Into Two Groups */
+SELECT 
+    *,
+    NTILE(2) OVER(ORDER BY OrderID) AS Buckets
+FROM Sales.Orders
