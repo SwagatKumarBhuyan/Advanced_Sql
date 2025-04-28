@@ -3,22 +3,24 @@
 --     Medium: If the Sales is Between 20 and 50
 --     Low: If the Sales is Less than 20
 -- Sort the Result From lowest to Highest
-SELECT
-Category,
-SUM(Sales) As TotalSales
-FROM (
-SELECT
-OrderID,
-Sales,
-CASE 
-    WHEN Sales > 50 THEN 'Higher'
-	WHEN Sales > 20 THEN 'Medium'
-	Else 'Low'
-END AS Category
-FROM Sales.Orders 
-     )t
+WITH SalesCategories AS (
+    SELECT 
+        OrderID,
+        Sales,
+        CASE 
+            WHEN Sales > 50 THEN 'High'
+            WHEN Sales BETWEEN 20 AND 50 THEN 'Medium'
+            ELSE 'Low'
+        END AS Category
+    FROM Sales.Orders
+)
+
+SELECT 
+    Category,
+    SUM(Sales) AS TotalSales
+FROM SalesCategories
 GROUP BY Category
-ORDER BY TotalSales
+ORDER BY TotalSales;
 
 
 -- Retrieve Employee Details with Gender Displayed As Full Text
